@@ -2,11 +2,11 @@ package org.gooseapple.core.event.events;
 
 import org.gooseapple.core.math.Vector2;
 
-public class MouseClickEvent extends Event{
+public class MouseEvent extends Event{
     private Vector2 mousePosition;
     private MouseClickType clickType;
 
-    public MouseClickEvent(Vector2 mousePosition, MouseClickType clickType) {
+    public MouseEvent(Vector2 mousePosition, MouseClickType clickType) {
         this.mousePosition = mousePosition;
         this.clickType = clickType;
     }

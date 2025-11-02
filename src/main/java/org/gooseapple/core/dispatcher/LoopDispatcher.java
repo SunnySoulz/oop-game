@@ -9,7 +9,7 @@ import org.gooseapple.game.Game;
 
 public class LoopDispatcher {
     private int targetFPS = 60;
-    private int targetTPS = 5;
+    private int targetTPS = 60;
 
     private double accumulator = 0.0;
     private double lastUpdateTime;
@@ -53,7 +53,7 @@ public class LoopDispatcher {
 
                     frameAccumulator -= (1000d/targetFPS);
 
-                    RenderEvent event = new RenderEvent(game.getGraphicsContext(), deltaTime);
+                    RenderEvent event = new RenderEvent(game.getGraphicsContext(), deltaTime, game.getScreenSize());
                     event.dispatch();
                 }
             }

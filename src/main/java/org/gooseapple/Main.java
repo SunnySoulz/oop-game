@@ -6,10 +6,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.gooseapple.core.dispatcher.LoopDispatcher;
+import org.gooseapple.core.dispatcher.MouseDispatcher;
 import org.gooseapple.game.Game;
 
 public class Main extends Application {
-    private LoopDispatcher dispatcher;
+    private LoopDispatcher loopDispatcher;
+    private MouseDispatcher mouseDispatcher;
 
 
     public static void main(String[] args) {
@@ -24,7 +26,8 @@ public class Main extends Application {
         primaryStage.setScene(game.getScene());
 
         //Physics and UI thread listening happen here
-        dispatcher = new LoopDispatcher(game);
+        loopDispatcher = new LoopDispatcher(game);
+        mouseDispatcher = new MouseDispatcher(game);
 
         primaryStage.show();
     }
