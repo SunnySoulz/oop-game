@@ -1,5 +1,6 @@
 package org.gooseapple.core.render;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import org.gooseapple.core.event.EventHandler;
 import org.gooseapple.core.event.EventListener;
@@ -12,11 +13,28 @@ public class Rectangle extends AbstractRenderable {
     private Vector2 size;
     private Vector2 position;
     private Vector2 velocity;
+    private Texture texture;
 
     public Rectangle(Vector2 size, Vector2 position) {
         super();
         this.size = size;
         this.position = position;
+    }
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    public Vector2 getSize() {
+        return size;
     }
 
     public Vector2 getVelocity() {
@@ -29,21 +47,22 @@ public class Rectangle extends AbstractRenderable {
 
     @EventHandler
     public void tick(TickEvent event) {
-        this.position.add(this.velocity);
+        if (this.velocity != null) {
+            this.position.add(this.velocity);
+        }
     }
 
     @EventHandler
     @Override
     public void render(RenderEvent event) {
-        if (!isInView(event.getScreenSize())) {
-            this.velocity.reverse();
-            return;
-        }
-
         var gc = event.getGraphicsContext();
 
-        gc.setFill(Color.RED);
-        gc.fillRect(position.getX(), position.getY(), size.getX(), size.getY());
+        if (texture == null) {
+            gc.setFill(Color.BLACK);
+            gc.fillRect(position.getX(), position.getY(), size.getX(), size.getY());
+        } else {
+            gc.drawImage(texture.getImage(), position.getX(), position.getY(), size.getX(), size.getY());
+        }
     }
 
     @Override

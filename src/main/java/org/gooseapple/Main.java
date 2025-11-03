@@ -29,6 +29,8 @@ public class Main extends Application {
         loopDispatcher = new LoopDispatcher(game);
         mouseDispatcher = new MouseDispatcher(game);
 
+        primaryStage.setTitle("Iron Convoy");
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 }

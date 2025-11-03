@@ -10,7 +10,7 @@ application {
 
 javafx {
     version = "24.0.2"
-    modules("javafx.controls", "javafx.fxml")
+    modules("javafx.controls", "javafx.fxml", "javafx.media")
 }
 
 group = "org.gooseapple"
