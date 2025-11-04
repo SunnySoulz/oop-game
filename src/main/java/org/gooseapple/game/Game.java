@@ -13,6 +13,8 @@ import org.gooseapple.core.sound.Sound;
 import org.gooseapple.game.event.DestroyBulletEvent;
 import org.gooseapple.game.objects.Bullet;
 import org.gooseapple.game.objects.FlakBurst;
+import org.gooseapple.game.objects.train.Carriage;
+import org.gooseapple.game.objects.train.Locomotive;
 import org.gooseapple.level.Level;
 import org.w3c.dom.css.Rect;
 
@@ -24,7 +26,6 @@ public class Game extends Level {
     private Canvas gameCanvas;
     private Scene scene;
     private GraphicsContext graphicsContext;
-    private Rectangle train;
     private Sound drivingSound;
     private Sound flakSound;
     private Sound flakBurst;
@@ -32,6 +33,8 @@ public class Game extends Level {
     private ArrayList<Bullet> bullets = new ArrayList<>();
 
     private Vector2 screenSize = new Vector2(1300,400);
+
+    private Locomotive locomotive;
 
     public Game() {
 
@@ -50,8 +53,14 @@ public class Game extends Level {
 
         this.setEnabled(true);
 
-        this.train = new Rectangle(new Vector2(90,40), new Vector2(screenSize.getX() - 300, screenSize.getY() - 40));
-        this.train.setTexture(new Texture("textures/train1.png"));
+        this.locomotive = new Locomotive( new Vector2(screenSize.getX() - 300, screenSize.getY() - 40), "textures/train1.png");
+        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
+        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
+        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
+        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car_tank.png"));
+        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
+
+
         this.drivingSound = new Sound("/sound/train_drive.mp3");
         this.drivingSound.setVolume(0.025);
         this.drivingSound.setLoop(true);
@@ -77,11 +86,11 @@ public class Game extends Level {
         if (event.getClickType() == MouseEvent.MouseClickType.LEFT) {
             this.flakSound.play();
 
-            Bullet bullet = new Bullet(new Vector2(this.train.getPosition().getX() + 20, this.train.getPosition().getY()+9));
-            Bullet bullet2 = new Bullet(new Vector2(this.train.getPosition().getX() + 70, this.train.getPosition().getY()+9));
+            Bullet bullet = new Bullet(new Vector2(this.locomotive.getPosition().getX() + 20, this.locomotive.getPosition().getY()+9));
+            Bullet bullet2 = new Bullet(new Vector2(this.locomotive.getPosition().getX() + 70, this.locomotive.getPosition().getY()+9));
 
 
-            Vector2 direction = event.getMousePosition().subtract(this.train.getPosition()).normalize();
+            Vector2 direction = event.getMousePosition().subtract(this.locomotive.getPosition()).normalize();
 
             Random random = new Random();
 

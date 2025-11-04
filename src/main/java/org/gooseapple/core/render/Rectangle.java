@@ -42,6 +42,10 @@ public class Rectangle extends AbstractRenderable {
         return position;
     }
 
+    public void setPosition(Vector2 position) {
+        this.position = position;
+    }
+
     public Vector2 getSize() {
         return size;
     }

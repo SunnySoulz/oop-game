@@ -1,6 +1,6 @@
 package org.gooseapple.core.math;
 
-public class Vector2 {
+public class Vector2 implements Cloneable {
     private double x;
     private double y;
 
@@ -45,5 +45,19 @@ public class Vector2 {
     @Override
     public String toString() {
         return "X:" + this.x + " | Y:" + this.y;
+    }
+
+    @Override
+    public Vector2 clone() {
+        try {
+            Vector2 clone = (Vector2) super.clone();
+
+            clone.x = this.x;
+            clone.y = this.y;
+
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
