@@ -9,6 +9,10 @@ import org.gooseapple.core.render.Texture;
 public class Carriage extends Rectangle {
     private Carriage previousCarriage;
     private Carriage nextCarriage;
+
+    private int health = 100;
+    private int maxHealth = 100;
+
     public Carriage(Vector2 position, String texture) {
         super(new Vector2(90,40), position);
         this.setTexture(new Texture(texture));
@@ -49,5 +53,21 @@ public class Carriage extends Rectangle {
     @Override
     public void render(RenderEvent event) {
         super.render(event);
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 }

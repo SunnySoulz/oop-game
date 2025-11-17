@@ -9,8 +9,8 @@ import org.gooseapple.core.render.Texture;
 
 public class FlakBurst extends Rectangle {
     public FlakBurst(Vector2 position) {
-        super(new Vector2(16,16), position);
-        this.setTexture(new Texture("textures/flak_burst.png"));
+        super(new Vector2(21,21), position);
+        this.setTexture(new Texture("textures/flak_burst.gif"));
     }
 
     @EventHandler

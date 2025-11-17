@@ -14,6 +14,7 @@ import org.gooseapple.core.render.Texture;
 import org.gooseapple.core.sound.Sound;
 import org.gooseapple.game.event.DestroyBulletEvent;
 import org.gooseapple.game.objects.Bullet;
+import org.gooseapple.game.objects.Fire;
 import org.gooseapple.game.objects.FlakBurst;
 import org.gooseapple.game.objects.train.Carriage;
 import org.gooseapple.game.objects.train.Locomotive;
@@ -60,12 +61,14 @@ public class Game extends Level {
 
         this.setEnabled(true);
 
-        this.locomotive = new Locomotive( new Vector2(screenSize.getX() - 300, screenSize.getY() - 40), "textures/train1.png");
+        this.locomotive = new Locomotive( new Vector2(screenSize.getX() - 300, screenSize.getY() - 43), "textures/train1.png");
         this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
         this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
         this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
         this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car_tank.png"));
         this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
+
+        Fire fire = new Fire(this.locomotive.getPosition());
 
 
         this.drivingSound = new Sound("/sound/train_drive.mp3");

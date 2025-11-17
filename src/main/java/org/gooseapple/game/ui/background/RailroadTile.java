@@ -26,13 +26,13 @@ public class RailroadTile extends Rectangle {
                 nextValidTypes = new ArrayList<>(Arrays.asList(RailroadType.RAILROAD, RailroadType.RAILROAD_WIRE_START));
                 return "textures/parallax/railroad/railroad.png";
             case RAILROAD_WIRE_START:
-                nextValidTypes = new ArrayList<>(Arrays.asList(RailroadType.RAILROAD_WIRE_END, RailroadType.RAILROAD_WIRE_START));
+                nextValidTypes = new ArrayList<>(Arrays.asList(RailroadType.RAILROAD_WIRE_END, RailroadType.RAILROAD_WIRE_MIDDLE));
                 return "textures/parallax/railroad/railroad_wire_start.png";
             case RAILROAD_WIRE_MIDDLE:
                 nextValidTypes = new ArrayList<>(Arrays.asList(RailroadType.RAILROAD_WIRE_MIDDLE, RailroadType.RAILROAD_WIRE_END));
                 return "textures/parallax/railroad/railroad_wire_middle.png";
             case RAILROAD_WIRE_END:
-                nextValidTypes = new ArrayList<>(Arrays.asList(RailroadType.RAILROAD, RailroadType.RAILROAD_WIRE_MIDDLE));
+                nextValidTypes = new ArrayList<>(Arrays.asList(RailroadType.RAILROAD));
                 return "textures/parallax/railroad/railroad_wire_end.png";
         }
         return "textures/parallax/railroad/railroad.png";
