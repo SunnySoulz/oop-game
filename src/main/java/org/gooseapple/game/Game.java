@@ -3,8 +3,10 @@ package org.gooseapple.game;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import org.gooseapple.core.event.EventHandler;
+import org.gooseapple.core.event.events.KeyboardEvent;
 import org.gooseapple.core.event.events.MouseEvent;
 import org.gooseapple.core.math.Vector2;
 import org.gooseapple.core.render.Rectangle;
@@ -15,6 +17,8 @@ import org.gooseapple.game.objects.Bullet;
 import org.gooseapple.game.objects.FlakBurst;
 import org.gooseapple.game.objects.train.Carriage;
 import org.gooseapple.game.objects.train.Locomotive;
+import org.gooseapple.game.ui.background.BackgroundType;
+import org.gooseapple.game.ui.background.Parallax;
 import org.gooseapple.level.Level;
 import org.w3c.dom.css.Rect;
 
@@ -35,6 +39,9 @@ public class Game extends Level {
     private Vector2 screenSize = new Vector2(1300,400);
 
     private Locomotive locomotive;
+    private Parallax parallax;
+
+    private double speed = 1;
 
     public Game() {
 
@@ -71,6 +78,8 @@ public class Game extends Level {
 
         this.flakBurst = new Sound("/sound/flak_burst.mp3");
         this.flakBurst.setVolume(0.05);
+
+        this.parallax = new Parallax(BackgroundType.PLAINS, screenSize);
     }
 
     public GraphicsContext getGraphicsContext() {
@@ -106,6 +115,17 @@ public class Game extends Level {
         flakBurst.play();
         new FlakBurst(event.getBullet().getPosition());
         bullets.remove(event.getBullet());
+    }
+
+    @EventHandler
+    public void HandleKeyboardPress(KeyboardEvent event) {
+        if (event.keyCode(KeyCode.W)) {
+            this.speed += 0.125;
+            this.parallax.setSpeed(this.speed);
+        } else if (event.keyCode(KeyCode.S)) {
+            this.speed -= 0.125;
+            this.parallax.setSpeed(this.speed);
+        }
     }
 
 

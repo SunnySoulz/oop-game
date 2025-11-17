@@ -1,0 +1,5 @@
+package org.gooseapple.game.ui.background;
+
+public enum RailroadType {
+    RAILROAD, RAILROAD_WIRE_START, RAILROAD_WIRE_MIDDLE, RAILROAD_WIRE_END
+}

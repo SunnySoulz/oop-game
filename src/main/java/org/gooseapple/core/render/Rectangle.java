@@ -22,6 +22,19 @@ public class Rectangle extends AbstractRenderable {
         this.position = position;
     }
 
+    public Rectangle(Vector2 size, Vector2 position, boolean autoRender, String texturePath) {
+        this.size = size;
+        this.position = position;
+
+        if (texturePath != null) {
+            setTexture(new Texture(texturePath));
+        }
+
+        if (!autoRender) {
+            EventManager.getInstance().deleteListener(this);
+        }
+    }
+
     public double getOpacity() {
         return opacity;
     }
