@@ -18,27 +18,20 @@ public class Bullet extends Rectangle {
         super(new Vector2(2,2), position);
         Random random = new Random();
         ranTicksBeforeExplosion = random.nextInt(10,60);
+
+        getPhysicsBody().setCollisionEnabled(true);
     }
 
     @EventHandler
-    @Override
     public void tick(TickEvent event) {
-
-        if (getVelocity() != null) {
-            Vector2 v = getVelocity();
-            v.setY(v.getY() + gravityForce);
-
-            if (v.getY() > 0) {
-                ranTicksBeforeExplosion -= 1;
-                if (ranTicksBeforeExplosion == 0) {
-                    DestroyBulletEvent bulletEvent = new DestroyBulletEvent(this);
-                    bulletEvent.dispatch();
-                    EventManager.getInstance().deleteListener(this);
-                }
+        if (this.getPhysicsBody().getVelocity().getY() > 0) {
+            ranTicksBeforeExplosion -= 1;
+            if (ranTicksBeforeExplosion == 0) {
+                DestroyBulletEvent bulletEvent = new DestroyBulletEvent(this);
+                bulletEvent.dispatch();
+                super.remove();
             }
         }
-
-        super.tick(event);
     }
 
     @EventHandler

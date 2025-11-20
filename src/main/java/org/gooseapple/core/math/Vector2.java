@@ -42,6 +42,11 @@ public class Vector2 implements Cloneable {
         }
     }
 
+    public void zero() {
+        this.x = 0.0;
+        this.y = 0.0;
+    }
+
     @Override
     public String toString() {
         return "X:" + this.x + " | Y:" + this.y;

@@ -34,7 +34,7 @@ public class LoopDispatcher {
                 if (canTick()) {
                     accumulator -= (1000d/targetTPS);
 
-                    TickEvent event = new TickEvent();
+                    TickEvent event = new TickEvent(deltaTime/1000d);
                     event.dispatch();
                 }
             }

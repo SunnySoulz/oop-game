@@ -8,6 +8,8 @@ import javafx.scene.layout.GridPane;
 import org.gooseapple.core.event.EventHandler;
 import org.gooseapple.core.event.events.KeyboardEvent;
 import org.gooseapple.core.event.events.MouseEvent;
+import org.gooseapple.core.event.events.RenderEvent;
+import org.gooseapple.core.event.events.TickEvent;
 import org.gooseapple.core.math.Vector2;
 import org.gooseapple.core.render.Rectangle;
 import org.gooseapple.core.render.Texture;
@@ -16,6 +18,7 @@ import org.gooseapple.game.event.DestroyBulletEvent;
 import org.gooseapple.game.objects.Bullet;
 import org.gooseapple.game.objects.Fire;
 import org.gooseapple.game.objects.FlakBurst;
+import org.gooseapple.game.objects.entities.Zeppelin;
 import org.gooseapple.game.objects.train.Carriage;
 import org.gooseapple.game.objects.train.Locomotive;
 import org.gooseapple.game.ui.background.BackgroundType;
@@ -35,6 +38,8 @@ public class Game extends Level {
     private Sound flakSound;
     private Sound flakBurst;
 
+    private Zeppelin zeppelin;
+
     private ArrayList<Bullet> bullets = new ArrayList<>();
 
     private Vector2 screenSize = new Vector2(1300,400);
@@ -45,7 +50,6 @@ public class Game extends Level {
     private double speed = 1;
 
     public Game() {
-
         /**
          * TODO: Add background, maybe parallax for that 2d/3d aesthetic?
          * It may be cool to have multiple types of backgrounds, ie, desert, forest etc, but itll depend on how much time we have
@@ -68,8 +72,12 @@ public class Game extends Level {
         this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car_tank.png"));
         this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
 
-        Fire fire = new Fire(this.locomotive.getPosition());
+        var position = this.locomotive.getPosition().clone();
+        position.add(new Vector2(-50,0));
+        Fire fire = new Fire(position);
 
+        zeppelin = new Zeppelin(new Vector2(screenSize.getX(), 15));
+        zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.25,0));
 
         this.drivingSound = new Sound("/sound/train_drive.mp3");
         this.drivingSound.setVolume(0.025);
@@ -106,8 +114,8 @@ public class Game extends Level {
 
             Random random = new Random();
 
-            bullet.setVelocity(direction.multiply(random.nextDouble(5,5.5)));
-            bullet2.setVelocity(direction.multiply(random.nextDouble(5,5.5)));
+            bullet.getPhysicsBody().setVelocity(direction.multiply(random.nextDouble(7,7.25)));
+            bullet2.getPhysicsBody().setVelocity(direction.multiply(random.nextDouble(7,7.25)));
             bullets.add(bullet);
             bullets.add(bullet2);
         }
@@ -116,7 +124,7 @@ public class Game extends Level {
     @EventHandler
     public void HandleBulletDestroyEvent(DestroyBulletEvent event) {
         flakBurst.play();
-        new FlakBurst(event.getBullet().getPosition());
+        new FlakBurst(event.getBullet().center());
         bullets.remove(event.getBullet());
     }
 
@@ -129,6 +137,18 @@ public class Game extends Level {
             this.speed -= 0.125;
             this.parallax.setSpeed(this.speed);
         }
+    }
+
+    private double deltaTime = 0;
+
+    @EventHandler
+    public void handleDevCounter(TickEvent event) {
+        deltaTime = event.getDeltaTime();
+    }
+
+    @EventHandler
+    public void handleDisplay(RenderEvent event) {
+        event.getGraphicsContext().fillText("Current deltaTime: " +  deltaTime, 15,15);
     }
 
 

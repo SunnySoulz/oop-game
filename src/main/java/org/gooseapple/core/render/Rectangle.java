@@ -1,30 +1,36 @@
 package org.gooseapple.core.render;
 
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import org.gooseapple.core.collision.PhysicsBody;
 import org.gooseapple.core.event.EventHandler;
-import org.gooseapple.core.event.EventListener;
 import org.gooseapple.core.event.EventManager;
 import org.gooseapple.core.event.events.RenderEvent;
-import org.gooseapple.core.event.events.TickEvent;
 import org.gooseapple.core.math.Vector2;
 
 public class Rectangle extends AbstractRenderable {
-    private Vector2 size;
-    private Vector2 position;
-    private Vector2 velocity;
     private Texture texture;
     private double opacity = 1;
+    private Vector2 textureSize;
+
+    private boolean hitboxDebug = false;
+
+    private PhysicsBody physicsBody;
+
 
     public Rectangle(Vector2 size, Vector2 position) {
         super();
-        this.size = size;
-        this.position = position;
+
+        this.textureSize = size;
+        this.physicsBody = new PhysicsBody(this, position);
+        this.physicsBody.setPosition(position);
+        this.physicsBody.setCollisionSize(size);
     }
 
     public Rectangle(Vector2 size, Vector2 position, boolean autoRender, String texturePath) {
-        this.size = size;
-        this.position = position;
+        this.textureSize = size;
+        this.physicsBody = new PhysicsBody(this, position);
+        this.physicsBody.setPosition(position);
+        this.physicsBody.setCollisionSize(size);
 
         if (texturePath != null) {
             setTexture(new Texture(texturePath));
@@ -33,6 +39,18 @@ public class Rectangle extends AbstractRenderable {
         if (!autoRender) {
             EventManager.getInstance().deleteListener(this);
         }
+    }
+
+    public Vector2 center() {
+        var temp =  getPosition().clone();
+        temp.add(getSize().multiply(0.5));
+        return temp;
+    }
+
+    public void setCenter(Vector2 newCenter) {
+        var temp = newCenter.clone();
+        temp.add(getSize().multiply(-0.5));
+        setPosition(temp);
     }
 
     public double getOpacity() {
@@ -52,29 +70,33 @@ public class Rectangle extends AbstractRenderable {
     }
 
     public Vector2 getPosition() {
-        return position;
+        return this.physicsBody.getPosition();
+    }
+
+    public void setHitboxDebug(boolean hitboxDebug) {
+        this.hitboxDebug = hitboxDebug;
     }
 
     public void setPosition(Vector2 position) {
-        this.position = position;
+        this.physicsBody.setPosition(position);
+    }
+
+    public PhysicsBody getPhysicsBody() {
+        return physicsBody;
+    }
+
+    public void setPhysicsBody(PhysicsBody physicsBody) {
+        this.physicsBody = physicsBody;
     }
 
     public Vector2 getSize() {
-        return size;
+        return this.textureSize;
     }
 
-    public Vector2 getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(Vector2 velocity) {
-        this.velocity = velocity;
-    }
-
-    @EventHandler
-    public void tick(TickEvent event) {
-        if (this.velocity != null) {
-            this.position.add(this.velocity);
+    public void remove() {
+        EventManager.getInstance().deleteListener(this);
+        if (physicsBody != null) {
+            physicsBody.onRemove();
         }
     }
 
@@ -90,22 +112,27 @@ public class Rectangle extends AbstractRenderable {
 
         if (texture == null) {
             gc.setFill(Color.BLACK);
-            gc.fillRect(position.getX(), position.getY(), size.getX(), size.getY());
+            gc.fillRect(getPosition().getX(), getPosition().getY(), getSize().getX(), getSize().getY());
         } else {
-            gc.drawImage(texture.getImage(), position.getX(), position.getY(), size.getX(), size.getY());
+            gc.drawImage(texture.getImage(), getPosition().getX(), getPosition().getY(), getSize().getX(), getSize().getY());
         }
 
         if (opacity != 1) {
             gc.restore();
         }
+
+        if (hitboxDebug) {
+            gc.setFill(Color.RED);
+            gc.fillRect(getPosition().getX(), getPosition().getY(), getPhysicsBody().getSize().getX(), getPhysicsBody().getSize().getY());
+        }
     }
 
     @Override
     public boolean isInView(Vector2 screenSize) {
-        double left = position.getX();
-        double right = position.getX() + size.getX();
-        double top = position.getY();
-        double bottom = position.getY() + size.getY();
+        double left = getPosition().getX();
+        double right = getPosition().getX() + getSize().getX();
+        double top = getPosition().getY();
+        double bottom = getPosition().getY() + getSize().getY();
 
         double screenLeft = 0;
         double screenRight = screenSize.getX();
