@@ -6,6 +6,7 @@ import com.github.davidmoten.rtree2.geometry.Rectangle;
 import org.gooseapple.core.event.EventHandler;
 import org.gooseapple.core.event.EventListener;
 import org.gooseapple.core.event.EventManager;
+import org.gooseapple.core.event.events.CollisionEvent;
 import org.gooseapple.core.event.events.TickEvent;
 import org.gooseapple.core.math.Vector2;
 
@@ -112,8 +113,8 @@ public class PhysicsService implements EventListener {
         boolean overlapY = aPos.getY() + aSize.getY() > bPos.getY() && aPos.getY() < bPos.getY() + bSize.getY();
 
         if (overlapX && overlapY) {
-            a.getVelocity().zero();
-            b.getVelocity().zero();
+            CollisionEvent event = new CollisionEvent(a, b);
+            event.dispatch();
         }
     }
 }

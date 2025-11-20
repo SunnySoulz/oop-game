@@ -76,7 +76,7 @@ public class Game extends Level {
         position.add(new Vector2(-50,0));
         Fire fire = new Fire(position);
 
-        zeppelin = new Zeppelin(new Vector2(screenSize.getX(), 15));
+        zeppelin = new Zeppelin(new Vector2(screenSize.getX(), 40));
         zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.25,0));
 
         this.drivingSound = new Sound("/sound/train_drive.mp3");

@@ -2,16 +2,19 @@ package org.gooseapple.game.objects;
 
 import org.gooseapple.core.event.EventHandler;
 import org.gooseapple.core.event.EventManager;
+import org.gooseapple.core.event.events.CollisionEvent;
 import org.gooseapple.core.event.events.RenderEvent;
 import org.gooseapple.core.event.events.TickEvent;
 import org.gooseapple.core.math.Vector2;
 import org.gooseapple.core.render.Rectangle;
+import org.gooseapple.game.event.BulletHitEvent;
 import org.gooseapple.game.event.DestroyBulletEvent;
+import org.gooseapple.game.objects.entities.Entity;
 
 import java.util.Random;
 
 public class Bullet extends Rectangle {
-    private static final double gravityForce = 0.05;
+    private int damage = 10;
     private int ranTicksBeforeExplosion;
 
     public Bullet(Vector2 position) {
@@ -22,15 +25,42 @@ public class Bullet extends Rectangle {
         getPhysicsBody().setCollisionEnabled(true);
     }
 
+    public int getDamage() {
+        return damage;
+    }
+
     @EventHandler
     public void tick(TickEvent event) {
         if (this.getPhysicsBody().getVelocity().getY() > 0) {
             ranTicksBeforeExplosion -= 1;
             if (ranTicksBeforeExplosion == 0) {
-                DestroyBulletEvent bulletEvent = new DestroyBulletEvent(this);
-                bulletEvent.dispatch();
-                super.remove();
+                this.remove();
             }
+        }
+    }
+
+    @Override
+    public void remove() {
+        DestroyBulletEvent bulletEvent = new DestroyBulletEvent(this);
+        bulletEvent.dispatch();
+        super.remove();
+    }
+
+    @EventHandler
+    public void handleCollision(CollisionEvent event) {
+        var firstBody = event.getFirstBody();
+        var secondBody = event.getSecondBody();
+
+        if (firstBody != getPhysicsBody() && secondBody != getPhysicsBody()) {
+            return;
+        }
+
+        var otherBody = (firstBody == getPhysicsBody()) ? secondBody : firstBody;
+
+        if (otherBody.getParent() instanceof Entity entity) {
+            BulletHitEvent bulletEvent = new BulletHitEvent(this, entity);
+            bulletEvent.dispatch();
+            this.remove();
         }
     }
 

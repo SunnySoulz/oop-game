@@ -11,6 +11,7 @@ public class Rectangle extends AbstractRenderable {
     private Texture texture;
     private double opacity = 1;
     private Vector2 textureSize;
+    private Vector2 textureOffset = new Vector2(0, 0);
 
     private boolean hitboxDebug = false;
 
@@ -42,7 +43,7 @@ public class Rectangle extends AbstractRenderable {
     }
 
     public Vector2 center() {
-        var temp =  getPosition().clone();
+        var temp = getPosition().clone();
         temp.add(getSize().multiply(0.5));
         return temp;
     }
@@ -51,6 +52,14 @@ public class Rectangle extends AbstractRenderable {
         var temp = newCenter.clone();
         temp.add(getSize().multiply(-0.5));
         setPosition(temp);
+    }
+
+    public Vector2 getTextureOffset() {
+        return textureOffset;
+    }
+
+    public void setTextureOffset(Vector2 textureOffset) {
+        this.textureOffset = textureOffset;
     }
 
     public double getOpacity() {
@@ -114,7 +123,7 @@ public class Rectangle extends AbstractRenderable {
             gc.setFill(Color.BLACK);
             gc.fillRect(getPosition().getX(), getPosition().getY(), getSize().getX(), getSize().getY());
         } else {
-            gc.drawImage(texture.getImage(), getPosition().getX(), getPosition().getY(), getSize().getX(), getSize().getY());
+            gc.drawImage(texture.getImage(), getPosition().getX() + textureOffset.getX(), getPosition().getY() + textureOffset.getY(), getSize().getX(), getSize().getY());
         }
 
         if (opacity != 1) {
