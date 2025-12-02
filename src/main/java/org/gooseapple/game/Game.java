@@ -47,7 +47,11 @@ public class Game extends Level {
     private Locomotive locomotive;
     private Parallax parallax;
 
-    private double speed = 1;
+    private double speed = 0;       //Speed starting at zero gives us a stationary start. If we want to start moving, need to change (and have the speed update beyond key preseses)
+    private double maxSpeed = 15; // 32.58 is approx 117.3 km/h (75mhp) can change if wanted, but 15 seemed better for background
+    private double minSpeed = 0;
+
+    private Random random = new Random();
 
     public Game() {
         /**
@@ -75,9 +79,9 @@ public class Game extends Level {
         var position = this.locomotive.getPosition().clone();
         position.add(new Vector2(-50,0));
         Fire fire = new Fire(position);
-
-        zeppelin = new Zeppelin(new Vector2(screenSize.getX(), 40));
-        zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.25,0));
+        
+        spawnEnemies(random.nextInt(3,6));
+        
 
         this.drivingSound = new Sound("/sound/train_drive.mp3");
         this.drivingSound.setVolume(0.025);
@@ -91,6 +95,16 @@ public class Game extends Level {
         this.flakBurst.setVolume(0.05);
 
         this.parallax = new Parallax(BackgroundType.PLAINS, screenSize);
+        
+    }
+
+    public void spawnEnemies(int count) {
+        for (int i = 0; i < count; i++) {
+            double x = random.nextDouble(screenSize.getX(), screenSize.getX() + 500);
+            double y = random.nextDouble(40, screenSize.getY() - 200);
+            Zeppelin zeppelin = new Zeppelin(new Vector2(x, y));
+            zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.25,0));
+        }
     }
 
     public GraphicsContext getGraphicsContext() {
@@ -130,25 +144,49 @@ public class Game extends Level {
 
     @EventHandler
     public void HandleKeyboardPress(KeyboardEvent event) {
-        if (event.keyCode(KeyCode.W)) {
+        if (event.keyCode(KeyCode.W) || event.keyCode(KeyCode.RIGHT)) {  //Changed keys, so can use left and right arrows too
+            if(this.speed >=maxSpeed) return;      // Caps max speed, can change if wanted
             this.speed += 0.125;
             this.parallax.setSpeed(this.speed);
-        } else if (event.keyCode(KeyCode.S)) {
-            this.speed -= 0.125;
+        } else if (event.keyCode(KeyCode.S) || event.keyCode(KeyCode.LEFT)) {
+            if (this.speed <=minSpeed) return;     // Prevents negative speed / reverse movement
+            else{this.speed -= 0.125;}
             this.parallax.setSpeed(this.speed);
+        }
+        else if (event.keyCode(KeyCode.SPACE)) { //debug spawning zeppelin manual single spawn
+            zeppelin = new Zeppelin(new Vector2(screenSize.getX(), 40));
+            zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.25,0));
+        }
+        else if (event.keyCode(KeyCode.SOFTKEY_5)) { //debug spawning zeppelin calling method to spawn multiple
+            spawnEnemies(5);
         }
     }
 
     private double deltaTime = 0;
+    private double distance = 0;
+    private String sDDistance = "";
+    private String sDSpeed = "";
+    
 
     @EventHandler
     public void handleDevCounter(TickEvent event) {
         deltaTime = event.getDeltaTime();
+        distance += speed * deltaTime;
     }
 
     @EventHandler
     public void handleDisplay(RenderEvent event) {
-        event.getGraphicsContext().fillText("Current deltaTime: " +  deltaTime, 15,15);
+        //event.getGraphicsContext().fillText("Current deltaTime: " +  deltaTime, 15,45);
+
+        event.getGraphicsContext().setFill(javafx.scene.paint.Color.rgb(174,197,205,0.8));  //want to move elsewhere later
+        event.getGraphicsContext().fillRoundRect(10, 5, 200, 40, 10,10);
+        event.getGraphicsContext().setFill(javafx.scene.paint.Color.rgb(2,2,2,1.0));
+
+        sDDistance = String.format("%.1f", distance)+ "km"; //Makes distance down to one decimal place and "converts" it to kilo meters
+        event.getGraphicsContext().fillText("Current Distance: " +  sDDistance, 15,20);
+        sDSpeed = String.format("%.1f", speed)+ "km/s"; //Makes Speed down to one decimal place and "converts" it to kilo meters
+        event.getGraphicsContext().fillText("Current Speed: " +  sDSpeed, 15,40);
+
     }
 
 

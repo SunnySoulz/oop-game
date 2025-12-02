@@ -6,6 +6,7 @@ import org.gooseapple.core.math.Vector2;
 import org.gooseapple.game.event.BulletHitEvent;
 
 public class Zeppelin extends Entity {
+
     public Zeppelin(Vector2 position) {
         super(new Vector2(150,90), position, "textures/entities/zeppelin.png");
         getPhysicsBody().setCollisionSize(new Vector2(120,40));
